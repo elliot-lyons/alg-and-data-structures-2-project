@@ -1,3 +1,5 @@
+package src;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,9 +8,9 @@ import java.util.Scanner;
 
 public class MainMenu
 {
-    private boolean quit, first;
+    private boolean quit, first, firstRoute, firstStop, firstArrive;
     private Scanner s;
-    private ArrayList<Stop> stops;
+    private ArrayList<Integer> stops;
     private ArrayList<Trip> trips;
 
     public MainMenu(Scanner s)
@@ -16,8 +18,11 @@ public class MainMenu
         this.s = s;
         quit = false;
         first = true;
-        stops = stopList();
+        //stops = stopList();
         trips = tripList();
+        firstRoute = true;
+        firstStop = true;
+        firstArrive = true;
     }
 
     public boolean isQuit()
@@ -25,9 +30,39 @@ public class MainMenu
         return quit;
     }
 
-    public ArrayList<Stop> stopList()
+//    public ArrayList<Stop> stopList()
+//    {
+//        ArrayList<Stop> result = new ArrayList<Stop>();
+//
+//        try
+//        {
+//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
+//            String current = br.readLine();
+//
+//            while ((current = br.readLine()) != null)
+//            {
+//                String[] line = current.split(",", -1);
+//
+//                int id = Integer.parseInt(line[0]);
+//                String name = line[2];
+//
+//                Stop aStop = new Stop(id, name);
+//                result.add(aStop);
+//            }
+//
+//        }
+//
+//        catch (IOException e)
+//        {
+//            System.out.println("stops.txt file not found");
+//        }
+//
+//        return result;
+//    }
+
+    public ArrayList<Integer> createStops()
     {
-        ArrayList<Stop> result = new ArrayList<Stop>();
+        ArrayList<Integer> result = new ArrayList<Integer>();
 
         try
         {
@@ -39,10 +74,7 @@ public class MainMenu
                 String[] line = current.split(",", -1);
 
                 int id = Integer.parseInt(line[0]);
-                String name = line[2];
-
-                Stop aStop = new Stop(id, name);
-                result.add(aStop);
+                result.add(id);
             }
 
         }
@@ -113,8 +145,14 @@ public class MainMenu
                 {
                     case "1":
                     {
-                        RoutePlan routePlan = new RoutePlan(s, stops);
-                        routePlan.display();
+                        if (firstRoute)
+                        {
+                            firstRoute = false;
+                            stops = createStops();
+                            //distances = createDistances(stops);
+                        }
+                        //RoutePlan routePlan = new RoutePlan(s, stops);
+                        //routePlan.display();
                         break;
                     }
 

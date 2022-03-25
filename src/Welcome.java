@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Scanner;
 
 public class Welcome                    // Welcoming the user to the program
