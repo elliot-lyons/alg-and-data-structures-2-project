@@ -37,4 +37,8 @@ public class Trip
 
         return null;
     }
+
+    public String tripInfo() {
+        return null;
+    }
 }

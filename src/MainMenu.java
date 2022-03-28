@@ -12,7 +12,7 @@ public class MainMenu
     private Scanner s;
     private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
-    private Distance[][] dists;
+    //private Distance[][] dists;
 
     public MainMenu(Scanner s)
     {
@@ -148,6 +148,9 @@ public class MainMenu
             String[] line = current.split(",", -1);
             String[] previous = line;
             previous[0] = "n/a";
+            boolean f = true;
+
+            System.out.println("Yes");
 
             Trip t = null;
             Stop s = null;
@@ -158,10 +161,20 @@ public class MainMenu
 
                 if (!line[0].equals(previous[0]))
                 {
+                    if (!f)
+                    {
+                        result.add(t);
+                    }
+
+                    else
+                    {
+                        f = false;
+                    }
                     t = new Trip(Integer.parseInt(line[0]));
                 }
 
                 int sID = Integer.parseInt(line[3]);
+                //System.out.println(sID);
 
                 for (int i = 0; i < stops.size(); i++)
                 {
@@ -172,12 +185,18 @@ public class MainMenu
                     }
                 }
 
-                if (s != null)
-                {
-                    s.setArrivalTime(line[1]);
-                    s.setDepartureTime(line[2]);
-                }
+                String[] a = line[1].split(":", -1);
+                a[0] = a[0].replaceAll("\\s","0");
+                int time = Integer.parseInt(a[0]);
 
+                if (time < 25)                // (Error handling by not looking at stops w arrival
+                {                                               // time greater than 24 (This may need to be moved if
+                    if (s != null)                              // RoutePlan can have stops with values greater than
+                    {                                           // 24
+                        s.setArrivalTime(line[1]);
+                        s.setDepartureTime(line[2]);
+                    }
+                }
 
             }
         }
@@ -215,7 +234,14 @@ public class MainMenu
                         if (firstRoute)
                         {
                             firstRoute = false;
-                            stops = createStops();
+
+                            System.out.println("Work");
+
+                            Trip t = trips.get(1);
+
+                            System.out.println("W");
+
+                            System.out.println(t.getTripID());
                             //distances = createDistances(stops);
                         }
                         //RoutePlan routePlan = new RoutePlan(s, stops);
@@ -232,7 +258,7 @@ public class MainMenu
 
                     case "3":
                     {
-                        ArrivalTime arrivalTime = new ArrivalTime(s);
+                        ArrivalTime arrivalTime = new ArrivalTime(s,trips);
                         arrivalTime.display();
                         break;
                     }
