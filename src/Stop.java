@@ -2,23 +2,16 @@ package src;
 
 public class Stop
 {
-    private int stopID;
+    private String stopID;
     private String stopName, arrivalTime, departureTime;
 
-    Stop(int stopID, String arrivalTime, String departureTime)
-    {
-        this.stopID = stopID;
-        this.arrivalTime = arrivalTime;
-        this.departureTime = departureTime;
-    }
-
-    Stop (int stopID, String stopName)
+    Stop (String stopID, String stopName)
     {
         this.stopID = stopID;
         this.stopName = stopName;
     }
 
-    public int getStopID()
+    public String getStopID()
     {
         return stopID;
     }
@@ -47,7 +40,7 @@ public class Stop
         this.arrivalTime = arrivalTime;
     }
 
-    public void setStopID(int stopID) {
+    public void setStopID(String stopID) {
         this.stopID = stopID;
     }
 

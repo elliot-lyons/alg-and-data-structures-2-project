@@ -12,6 +12,8 @@ public class MainMenu
     private Scanner s;
     private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
+    private int[][] distances;
+    private String[][] tripIDs;
     //private Distance[][] dists;
 
     public MainMenu(Scanner s)
@@ -20,8 +22,9 @@ public class MainMenu
         quit = false;
         first = true;
         stops = createStops();
+        distances = createDistances(stops);
         //dists = createDists();
-        trips = tripList();
+        //trips = tripList();
         firstRoute = true;
         firstStop = true;
         firstArrive = true;
@@ -75,7 +78,7 @@ public class MainMenu
             {
                 String[] line = current.split(",", -1);
 
-                int id = Integer.parseInt(line[0]);
+                String id = line[0];
                 String name = line[2];
 
                 Stop s = new Stop(id, name);
@@ -87,6 +90,60 @@ public class MainMenu
         catch (IOException e)
         {
             System.out.println("stops.txt file not found");
+        }
+
+        return result;
+    }
+
+    public int[][] createDistances(ArrayList<Stop> stops)
+    {
+        int[][] result = new int[stops.size()][stops.size()];
+        tripIDs = new String[stops.size()][stops.size()];
+
+        for (int i = 0; i < result.length; i++)
+        {
+            for (int j = 0; j < result.length; j++)
+            {
+                if (i == j)
+                {
+                    result[i][j] = 0;
+                    tripIDs[i][j] = "Same stop";
+                }
+
+                else
+                {
+                    result[i][j] = (int) Double.POSITIVE_INFINITY;
+                    tripIDs[i][j] = "n/a";
+                }
+            }
+        }
+
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
+            String current = br.readLine();
+            String[] line = current.split(",", -1);
+            String[] previous = line;
+            previous[0] = "n/a";
+
+            while(current != null)
+            {
+                ArrayList<String> stopIDs = new ArrayList<String>();
+                ArrayList<Integer> sequences = new ArrayList<Integer>();
+
+                while((current = br.readLine()) != null)
+                {
+
+                }
+
+
+            }
+
+        }
+
+        catch (IOException e)
+        {
+            System.out.println("stop_times.txt not found");
         }
 
         return result;
@@ -136,78 +193,105 @@ public class MainMenu
 //        return -1;
 //    }
 
+//    public ArrayList<Stop> makeStops()
+//    {
+//        ArrayList<String> result = new ArrayList<String>();
+//        try
+//        {
+//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
+//            String current = br.readLine();
+//
+//            while ((current = br.readLine()) != null)
+//            {
+//                String[] line = current.split(",", -1);
+//
+//                int id = Integer.parseInt(line[0]);
+//                String name = line[2];
+//
+//                Stop s = new Stop(id, name);
+//                result.add(s);
+//            }
+//
+//        }
+//
+//        catch (IOException e)
+//        {
+//            System.out.println("stops.txt file not found");
+//        }
+//    }
 
-    public ArrayList<Trip> tripList()
-    {
-        ArrayList<Trip> result = new ArrayList<Trip>();
 
-        try
-        {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
-            String current = br.readLine();
-            String[] line = current.split(",", -1);
-            String[] previous = line;
-            previous[0] = "n/a";
-            boolean f = true;
-
-            System.out.println("Yes");
-
-            Trip t = null;
-            Stop s = null;
-
-            while ((current = br.readLine()) != null)
-            {
-                line = current.split(",", -1);
-
-                if (!line[0].equals(previous[0]))
-                {
-                    if (!f)
-                    {
-                        result.add(t);
-                    }
-
-                    else
-                    {
-                        f = false;
-                    }
-                    t = new Trip(Integer.parseInt(line[0]));
-                }
-
-                int sID = Integer.parseInt(line[3]);
-                //System.out.println(sID);
-
-                for (int i = 0; i < stops.size(); i++)
-                {
-                    if (sID == (stops.get(i).getStopID()))
-                    {
-                        s = stops.get(i);
-                        break;
-                    }
-                }
-
-                String[] a = line[1].split(":", -1);
-                a[0] = a[0].replaceAll("\\s","0");
-                int time = Integer.parseInt(a[0]);
-
-                if (time < 25)                // (Error handling by not looking at stops w arrival
-                {                                               // time greater than 24 (This may need to be moved if
-                    if (s != null)                              // RoutePlan can have stops with values greater than
-                    {                                           // 24
-                        s.setArrivalTime(line[1]);
-                        s.setDepartureTime(line[2]);
-                    }
-                }
-
-            }
-        }
-
-        catch (IOException e)
-        {
-            System.out.println("stop_times.txt file not found");
-        }
-
-        return result;
-    }
+//    public ArrayList<Trip> tripList()
+//    {
+//        ArrayList<Trip> result = new ArrayList<Trip>();
+//
+//        try
+//        {
+//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
+//            String current = br.readLine();
+//            String[] line = current.split(",", -1);
+//            String[] previous = line;
+//            previous[0] = "n/a";
+//            boolean f = true;
+//
+//            System.out.println("Yes");
+//
+//            Trip t = null;
+//            Stop s = null;
+//
+//            while ((current = br.readLine()) != null)
+//            {
+//                line = current.split(",", -1);
+//
+//                if (!line[0].equals(previous[0]))
+//                {
+//                    if (!f)
+//                    {
+//                        result.add(t);
+//                    }
+//
+//                    else
+//                    {
+//                        f = false;
+//                    }
+//                    t = new Trip(Integer.parseInt(line[0]));
+//                }
+//
+//                int sID = Integer.parseInt(line[3]);
+//                //System.out.println(sID);
+//
+//                for (int i = 0; i < stops.size(); i++)
+//                {
+//                    if (sID == (stops.get(i).getStopID()))
+//                    {
+//                        s = stops.get(i);
+//                        break;
+//                    }
+//                }
+//
+//                String[] a = line[1].split(":", -1);
+//                a[0] = a[0].replaceAll("\\s","0");
+//                int time = Integer.parseInt(a[0]);
+//
+//                if (time < 25)                // (Error handling by not looking at stops w arrival
+//                {                                               // time greater than 24 (This may need to be moved if
+//                    if (s != null)                              // RoutePlan can have stops with values greater than
+//                    {                                           // 24
+//                        s.setArrivalTime(line[1]);
+//                        s.setDepartureTime(line[2]);
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//        catch (IOException e)
+//        {
+//            System.out.println("stop_times.txt file not found");
+//        }
+//
+//        return result;
+//    }
 
     public void display()
     {
