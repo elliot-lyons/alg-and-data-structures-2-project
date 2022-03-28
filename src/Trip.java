@@ -6,7 +6,6 @@ public class Trip
 {
     private int tripID;
     private ArrayList<Stop> stops;
-    private ArrayList<Double> times;
 
     Trip(int tripID)
     {
@@ -14,8 +13,28 @@ public class Trip
         stops = new ArrayList<>();
     }
 
-    public void addTime(String one, String two)
+    public void addStop(Stop aStop)
     {
+        stops.add(aStop);
+    }
 
+    public int getTripID()
+    {
+        return tripID;
+    }
+
+    public Stop getStopByID(int id)
+    {
+        for (int i = 0; i < stops.size(); i++)
+        {
+            Stop current = stops.get(i);
+
+            if (current.getStopID() == id)
+            {
+                return current;
+            }
+        }
+
+        return null;
     }
 }

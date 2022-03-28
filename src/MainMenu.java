@@ -10,15 +10,17 @@ public class MainMenu
 {
     private boolean quit, first, firstRoute, firstStop, firstArrive;
     private Scanner s;
-    private ArrayList<Integer> stops;
+    private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
+    private Distance[][] dists;
 
     public MainMenu(Scanner s)
     {
         this.s = s;
         quit = false;
         first = true;
-        //stops = stopList();
+        stops = createStops();
+        //dists = createDists();
         trips = tripList();
         firstRoute = true;
         firstStop = true;
@@ -60,9 +62,9 @@ public class MainMenu
 //        return result;
 //    }
 
-    public ArrayList<Integer> createStops()
+    public ArrayList<Stop> createStops()
     {
-        ArrayList<Integer> result = new ArrayList<Integer>();
+        ArrayList<Stop> result = new ArrayList<Stop>();
 
         try
         {
@@ -74,7 +76,10 @@ public class MainMenu
                 String[] line = current.split(",", -1);
 
                 int id = Integer.parseInt(line[0]);
-                result.add(id);
+                String name = line[2];
+
+                Stop s = new Stop(id, name);
+                result.add(s);
             }
 
         }
@@ -86,6 +91,51 @@ public class MainMenu
 
         return result;
     }
+
+//    public Distance[][] createDists()
+//    {
+//        Distance[][] result = new Distance[trips.size()][trips.size()];
+//
+//        for (int i = 0; i < result.length; i++)
+//        {
+//            for (int j = 0; j < result[0].length; j++)
+//            {
+//                if (i == j)
+//                {
+//                    result[i][j] = new Distance("0", "0", 0, 0);
+//                }
+//
+//                else
+//                {
+//                    result[i][j] = new Distance("0", "0", 0, (int) Double.POSITIVE_INFINITY);
+//                }
+//            }
+//        }
+//
+//        for (int i = 0; i < result.length; i++)
+//        {
+//            for (int j = 0; j < result[0].length; j++)
+//            {
+//
+//            }
+//        }
+//
+//
+//    }
+//
+//    public int getTripIndex(int tripID)
+//    {
+//        for (int i = 0; i < stops.size(); i++)
+//        {
+//            if (tripID == stops.get(i))
+//            {
+//                return i;
+//            }
+//        }
+//
+//        return -1;
+//    }
+
 
     public ArrayList<Trip> tripList()
     {
@@ -99,19 +149,36 @@ public class MainMenu
             String[] previous = line;
             previous[0] = "n/a";
 
+            Trip t = null;
+            Stop s = null;
+
             while ((current = br.readLine()) != null)
             {
-                ArrayList<String> lines = new ArrayList<String>();
+                line = current.split(",", -1);
 
-                while (line[0].equals(previous[0]))
+                if (!line[0].equals(previous[0]))
                 {
-                    if (first)
-                    {
-                        first = false;
-                    }
-
-
+                    t = new Trip(Integer.parseInt(line[0]));
                 }
+
+                int sID = Integer.parseInt(line[3]);
+
+                for (int i = 0; i < stops.size(); i++)
+                {
+                    if (sID == (stops.get(i).getStopID()))
+                    {
+                        s = stops.get(i);
+                        break;
+                    }
+                }
+
+                if (s != null)
+                {
+                    s.setArrivalTime(line[1]);
+                    s.setDepartureTime(line[2]);
+                }
+
+
             }
         }
 
@@ -187,5 +254,17 @@ public class MainMenu
             catch (Exception e)
             {}
         }
+    }
+
+    public int findDistance(String[] arrive, String[] depart)
+    {
+        int hours = Integer.parseInt(arrive[0]) - Integer.parseInt(depart[0]);
+        int mins = Integer.parseInt(arrive[1]) - Integer.parseInt(depart[1]);
+        int secs = Integer.parseInt(arrive[2]) - Integer.parseInt(depart[2]);
+
+        hours = hours * 60 * 60;                        // converting into seconds
+        mins *= mins;
+
+        return hours + mins + secs;
     }
 }
