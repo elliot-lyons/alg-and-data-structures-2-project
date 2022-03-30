@@ -12,7 +12,7 @@ public class MainMenu
     private Scanner s;
     private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
-    private int[][] distances;
+    private double[][] distances;
     private String[][] tripIDs;
     //private Distance[][] dists;
 
@@ -22,7 +22,7 @@ public class MainMenu
         quit = false;
         first = true;
         stops = createStops();
-        distances = createDistances(stops);
+        //distances = createDistances(stops, tripIDs);
         //dists = createDists();
         //trips = tripList();
         firstRoute = true;
@@ -95,10 +95,13 @@ public class MainMenu
         return result;
     }
 
-    public int[][] createDistances(ArrayList<Stop> stops)
+    /**
+     * Might have to be a String[][] twice as long holding tripIDs. (Maybe only twice as long lengthwise)
+     */
+
+    public double[][] createDistances(ArrayList<Stop> stops, String[][] tripIDs)
     {
-        int[][] result = new int[stops.size()][stops.size()];
-        tripIDs = new String[stops.size()][stops.size()];
+        double[][] result = new double[stops.size()][stops.size()];
 
         for (int i = 0; i < result.length; i++)
         {
@@ -112,7 +115,7 @@ public class MainMenu
 
                 else
                 {
-                    result[i][j] = (int) Double.POSITIVE_INFINITY;
+                    result[i][j] = Double.POSITIVE_INFINITY;
                     tripIDs[i][j] = "n/a";
                 }
             }
@@ -147,7 +150,7 @@ public class MainMenu
 
                 do
                 {
-                    if (tripID.equals(previous) || first)
+                    try
                     {
                         if (first)
                         {
@@ -164,11 +167,24 @@ public class MainMenu
 
                         previous = line[0];
                         current = br.readLine();
-                        line = current.split(",", -1);
-                        tripID = line[0];
-                        stopID = line[3];
-                        System.out.println("Stop: " + stopID);
-                        sequence = Integer.parseInt(line[4]);
+
+                        if (current != null)
+                        {
+                            line = current.split(",", -1);
+                            tripID = line[0];
+                            stopID = line[3];
+                            sequence = Integer.parseInt(line[4]);
+                        }
+
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    catch (NullPointerException e)
+                    {
+                        System.out.println("All ok!");
                     }
                 } while (tripID.equals(previous));
 
@@ -187,9 +203,12 @@ public class MainMenu
                 {                                                               // between nodes
                     for (int j = i + 1; j < tripStops.length; j++)
                     {
-                        int dis = j - 1;
+                        double dis = (double) j - 1;
                         int indexI = findIndex(tripStops[i]);
+//                        System.out.println("i: " + tripStops[i] + " ind: " + indexI);
                         int indexJ = findIndex(tripStops[j]);
+//                        System.out.println("j: " + tripStops[j] + "ind: " + indexJ);
+//                        System.out.println("Distance:" + dis);
 
                         if (indexI < 0 || indexJ < 0)
                         {
@@ -214,6 +233,56 @@ public class MainMenu
             System.out.println("stop_times.txt not found");
         }
 
+        // getting shortest costs from transfers.txt
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//transfers.txt"));
+            String current = br.readLine();
+            int count = 1;                  // used for letting user know the line no. of error if there is one in the file
+
+            while ((current = br.readLine()) != null)
+            {
+                String[] line = current.split(",", -1);
+                count++;
+
+                String source = line[0];
+                String destination = line[1];
+                int type = Integer.parseInt(line[2]);
+                double dist = -1;
+
+                if (type == 2)
+                {
+                    dist = Double.parseDouble(line[3]) / 100;
+                }
+
+                else if (type == 0)
+                {
+                    dist = 2;
+                }
+
+                else
+                {
+                    System.out.println("Error, invalid transfer type in transfers.txt for journey from stop: " + source
+                    + " to stop " + destination + " on line " + count + ".");
+                }
+
+                int indexI = findIndex(source);
+                int indexJ = findIndex(destination);
+                System.out.println("Distance: " + dist);
+
+                if (dist < result[indexI][indexJ])
+                {
+                    result[indexI][indexJ] = dist;
+                    tripIDs[indexI][indexJ] = "Transfer";
+                }
+            }
+        }
+
+        catch (IOException e)
+        {
+            System.out.println("transfers.txt not found");
+        }
+
         return result;
     }
 
@@ -230,7 +299,12 @@ public class MainMenu
         return -1;
     }
 
-//    public Distance[][] createDists()
+    public String[][] getTripIDs()
+    {
+        return tripIDs;
+    }
+
+    //    public Distance[][] createDists()
 //    {
 //        Distance[][] result = new Distance[trips.size()][trips.size()];
 //
@@ -404,9 +478,21 @@ public class MainMenu
 
                             System.out.println(t.getTripID());
                             stops = createStops();
-                            distances = createDistances(stops);
+                            tripIDs = new String[stops.size()][stops.size()];
+                            distances = createDistances(stops, tripIDs);
 
-                            System.out.println("Distance: " + distances[11][11] + " Trip: " + tripIDs[11][11]);
+                            System.out.println(distances[2][2]);
+
+                            for (int i = 0; i < distances.length; i++)
+                            {
+                                for (int j = 0; j < distances[0].length; j++)
+                                {
+                                    if (!tripIDs[i][j].equals("n/a") && !tripIDs[i][j].equals("Transfer") && !tripIDs[i][j].equals("Same stop"))
+                                    {
+                                        System.out.println("Distance: " + distances[i][j] + "Trip ID " + tripIDs[i][j]);
+                                    }
+                                }
+                            }
                         }
                         //RoutePlan routePlan = new RoutePlan(s, stops);
                         //routePlan.display();
