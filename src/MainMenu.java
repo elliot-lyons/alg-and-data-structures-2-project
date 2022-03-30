@@ -120,25 +120,93 @@ public class MainMenu
 
         try
         {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//small_stop_times.txt"));
             String current = br.readLine();
             String[] line = current.split(",", -1);
-            String[] previous = line;
-            previous[0] = "n/a";
+            String previous = line[0];
+            previous = "n/a";
+            boolean first = true;
 
             while(current != null)
             {
+                if (first)
+                {
+                    current = br.readLine();
+                    line = current.split(",", -1);
+                }
+
                 ArrayList<String> stopIDs = new ArrayList<String>();
                 ArrayList<Integer> sequences = new ArrayList<Integer>();
 
-                while((current = br.readLine()) != null)
-                {
+                String tripID = line[0];
+                String stopID = line[3];
+                int sequence = Integer.parseInt(line[4]);
 
+                Trip trip = new Trip(tripID);
+                int maxIndex = 0;
+
+                do
+                {
+                    if (tripID.equals(previous) || first)
+                    {
+                        if (first)
+                        {
+                            first = false;
+                        }
+
+                        if (sequence > maxIndex)
+                        {
+                            maxIndex = sequence;
+                        }
+
+                        stopIDs.add(stopID);
+                        sequences.add(sequence);
+
+                        previous = line[0];
+                        current = br.readLine();
+                        line = current.split(",", -1);
+                        tripID = line[0];
+                        stopID = line[3];
+                        System.out.println("Stop: " + stopID);
+                        sequence = Integer.parseInt(line[4]);
+                    }
+                } while (tripID.equals(previous));
+
+                String[] tripStops = new String[maxIndex];
+
+                for (int i = 0; i < tripStops.length; i++)
+                {
+                    int index = sequences.get(i) - 1;
+                    String id = stopIDs.get(i);
+                    tripStops[index] = id;
                 }
 
+                trip.setStops(tripStops);
 
+                for (int i = 0; i < tripStops.length; i++)                      // adding in the shortest direct paths
+                {                                                               // between nodes
+                    for (int j = i + 1; j < tripStops.length; j++)
+                    {
+                        int dis = j - 1;
+                        int indexI = findIndex(tripStops[i]);
+                        int indexJ = findIndex(tripStops[j]);
+
+                        if (indexI < 0 || indexJ < 0)
+                        {
+                            System.out.println("Error: indexI: " + indexI + " indexJ " + indexJ);
+                        }
+
+                        else
+                        {
+                            if (dis < result[indexI][indexJ])
+                            {
+                                result[indexI][indexJ] = dis;
+                                tripIDs[indexI][indexJ] = tripID;
+                            }
+                        }
+                    }
+                }
             }
-
         }
 
         catch (IOException e)
@@ -147,6 +215,19 @@ public class MainMenu
         }
 
         return result;
+    }
+
+    public int findIndex(String stopID)
+    {
+        for (int i = 0; i < stops.size(); i++)
+        {
+            if (stops.get(i).getStopID().equals(stopID))
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 //    public Distance[][] createDists()
@@ -319,14 +400,13 @@ public class MainMenu
                         {
                             firstRoute = false;
 
-                            System.out.println("Work");
-
                             Trip t = trips.get(1);
 
-                            System.out.println("W");
-
                             System.out.println(t.getTripID());
-                            //distances = createDistances(stops);
+                            stops = createStops();
+                            distances = createDistances(stops);
+
+                            System.out.println("Distance: " + distances[11][11] + " Trip: " + tripIDs[11][11]);
                         }
                         //RoutePlan routePlan = new RoutePlan(s, stops);
                         //routePlan.display();

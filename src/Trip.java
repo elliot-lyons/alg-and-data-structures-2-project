@@ -1,44 +1,31 @@
 package src;
 
-import java.util.ArrayList;
-
 public class Trip
 {
-    private int tripID;
-    private ArrayList<Stop> stops;
+    private String tripID;
+    private String[] stops;
 
-    Trip(int tripID)
+    Trip(String tripID)
     {
         this.tripID = tripID;
-        stops = new ArrayList<>();
     }
 
-    public void addStop(Stop aStop)
-    {
-        stops.add(aStop);
-    }
+//    public void addStop(Stop aStop)
+//    {
+//        stops.add(aStop);
+//    }
 
-    public int getTripID()
+    public String getTripID()
     {
         return tripID;
     }
 
-    public Stop getStopByID(int id)
+    public void setStops(String[] stops)
     {
-        for (int i = 0; i < stops.size(); i++)
-        {
-            Stop current = stops.get(i);
-
-            if (current.getStopID() == id)
-            {
-                return current;
-            }
-        }
-
-        return null;
+       this.stops = stops;
     }
 
-    public String tripInfo() {
-        return null;
+    public String[] getStopIDs() {
+        return stops;
     }
 }
