@@ -14,7 +14,6 @@ public class MainMenu {
     private double[][] distances;
     private String[][] tripIDs, sources, dests;
     RoutePlan routePlan;
-    //private Distance[][] dists;
 
     public MainMenu(Scanner s) {
         this.s = s;
@@ -36,36 +35,6 @@ public class MainMenu {
     public boolean isQuit() {
         return quit;
     }
-
-//    public ArrayList<Stop> stopList()
-//    {
-//        ArrayList<Stop> result = new ArrayList<Stop>();
-//
-//        try
-//        {
-//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
-//            String current = br.readLine();
-//
-//            while ((current = br.readLine()) != null)
-//            {
-//                String[] line = current.split(",", -1);
-//
-//                int id = Integer.parseInt(line[0]);
-//                String name = line[2];
-//
-//                Stop aStop = new Stop(id, name);
-//                result.add(aStop);
-//            }
-//
-//        }
-//
-//        catch (IOException e)
-//        {
-//            System.out.println("stops.txt file not found");
-//        }
-//
-//        return result;
-//    }
 
     public ArrayList<Stop> createStops() {
         ArrayList<Stop> result = new ArrayList<Stop>();
@@ -204,10 +173,6 @@ public class MainMenu {
             System.out.println("stop_times.txt not found");
         }
 
-        /**
-         * Uncomment transfers
-         */
-
         // getting shortest costs from transfers.txt
         try {
             BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_transfers.txt"));
@@ -283,160 +248,13 @@ public class MainMenu {
         }
     }
 
-    //    public Distance[][] createDists()
-//    {
-//        Distance[][] result = new Distance[trips.size()][trips.size()];
-//
-//        for (int i = 0; i < result.length; i++)
-//        {
-//            for (int j = 0; j < result[0].length; j++)
-//            {
-//                if (i == j)
-//                {
-//                    result[i][j] = new Distance("0", "0", 0, 0);
-//                }
-//
-//                else
-//                {
-//                    result[i][j] = new Distance("0", "0", 0, (int) Double.POSITIVE_INFINITY);
-//                }
-//            }
-//        }
-//
-//        for (int i = 0; i < result.length; i++)
-//        {
-//            for (int j = 0; j < result[0].length; j++)
-//            {
-//
-//            }
-//        }
-//
-//
-//    }
-//
-//    public int getTripIndex(int tripID)
-//    {
-//        for (int i = 0; i < stops.size(); i++)
-//        {
-//            if (tripID == stops.get(i))
-//            {
-//                return i;
-//            }
-//        }
-//
-//        return -1;
-//    }
-
-//    public ArrayList<Stop> makeStops()
-//    {
-//        ArrayList<String> result = new ArrayList<String>();
-//        try
-//        {
-//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
-//            String current = br.readLine();
-//
-//            while ((current = br.readLine()) != null)
-//            {
-//                String[] line = current.split(",", -1);
-//
-//                int id = Integer.parseInt(line[0]);
-//                String name = line[2];
-//
-//                Stop s = new Stop(id, name);
-//                result.add(s);
-//            }
-//
-//        }
-//
-//        catch (IOException e)
-//        {
-//            System.out.println("stops.txt file not found");
-//        }
-//    }
-
-
-//    public ArrayList<Trip> tripList()
-//    {
-//        ArrayList<Trip> result = new ArrayList<Trip>();
-//
-//        try
-//        {
-//            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
-//            String current = br.readLine();
-//            String[] line = current.split(",", -1);
-//            String[] previous = line;
-//            previous[0] = "n/a";
-//            boolean f = true;
-//
-//            System.out.println("Yes");
-//
-//            Trip t = null;
-//            Stop s = null;
-//
-//            while ((current = br.readLine()) != null)
-//            {
-//                line = current.split(",", -1);
-//
-//                if (!line[0].equals(previous[0]))
-//                {
-//                    if (!f)
-//                    {
-//                        result.add(t);
-//                    }
-//
-//                    else
-//                    {
-//                        f = false;
-//                    }
-//                    t = new Trip(Integer.parseInt(line[0]));
-//                }
-//
-//                int sID = Integer.parseInt(line[3]);
-//                //System.out.println(sID);
-//
-//                for (int i = 0; i < stops.size(); i++)
-//                {
-//                    if (sID == (stops.get(i).getStopID()))
-//                    {
-//                        s = stops.get(i);
-//                        break;
-//                    }
-//                }
-//
-//                String[] a = line[1].split(":", -1);
-//                a[0] = a[0].replaceAll("\\s","0");
-//                int time = Integer.parseInt(a[0]);
-//
-//                if (time < 25)                // (Error handling by not looking at stops w arrival
-//                {                                               // time greater than 24 (This may need to be moved if
-//                    if (s != null)                              // RoutePlan can have stops with values greater than
-//                    {                                           // 24
-//                        s.setArrivalTime(line[1]);
-//                        s.setDepartureTime(line[2]);
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//        catch (IOException e)
-//        {
-//            System.out.println("stop_times.txt file not found");
-//        }
-//
-//        return result;
-//    }
-
     public void display() {
         while (!quit) {
-            if (first) {
-                System.out.println("Please choose from one of the following options by pressing the corresponding key:");
-                System.out.println("1: Plan a route");
-                System.out.println("2: See stop info");
-                System.out.println("3: Search for all trips with a given arrival time");
-                System.out.println("4: Quit");
-                first = false;
-            }
+            System.out.println("Please choose from one of the following options by pressing the corresponding key:");
+            System.out.println("1: Plan a route");
+            System.out.println("2: See stop info");
+            System.out.println("3: Search for all trips with a given arrival time");
+            System.out.println("4: Quit");
 
             try {
                 String input = s.nextLine();
