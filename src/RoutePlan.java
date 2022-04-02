@@ -36,7 +36,7 @@ public class RoutePlan
             do {
                 if (!valid)
                 {
-                    System.out.print("Invalid output. ");
+                    System.out.print("Invalid input. ");
                 }
 
                 System.out.print("Please enter a source stop ID or 'back' to return to main menu: \n");
@@ -73,7 +73,7 @@ public class RoutePlan
             if (!back) {
                 do {
                     if (!valid) {
-                        System.out.print("Invalid output. ");
+                        System.out.print("Invalid input. ");
                     }
 
                     System.out.print("Please enter a destination stop ID or 'back' to return to main menu: \n");
@@ -110,6 +110,11 @@ public class RoutePlan
         if (distances[source][dest] == Double.POSITIVE_INFINITY)
         {
             return "There is no route from this source to this destination";
+        }
+
+        if (source == dest)
+        {
+            return "These stops are the same, the associated cost is 0.";
         }
 
         String res = "Take ";
@@ -156,7 +161,7 @@ public class RoutePlan
             return "Error";
         }
 
-        res += "\nThe associated cost with this trip is: " + distances[source][dest];
+        res += "\nThe associated cost with this trip is: " + distances[source][dest] + ".";
 
         return res;
     }
