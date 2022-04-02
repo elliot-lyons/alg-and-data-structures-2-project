@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Scanner;
 
 public class TransitLink                    // the main class where the program is run

@@ -1,19 +1,31 @@
-import java.util.ArrayList;
+package src;
 
 public class Trip
 {
-    private int tripID;
-    private ArrayList<Stop> stops;
-    private ArrayList<Double> times;
+    private String tripID;
+    private String[] stops;
 
-    Trip(int tripID)
+    Trip(String tripID)
     {
         this.tripID = tripID;
-        stops = new ArrayList<>();
     }
 
-    public void addTime(String one, String two)
-    {
+//    public void addStop(Stop aStop)
+//    {
+//        stops.add(aStop);
+//    }
 
+    public String getTripID()
+    {
+        return tripID;
+    }
+
+    public void setStops(String[] stops)
+    {
+       this.stops = stops;
+    }
+
+    public String[] getStopIDs() {
+        return stops;
     }
 }
