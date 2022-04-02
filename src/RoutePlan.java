@@ -92,7 +92,6 @@ public class RoutePlan
                                 if (input.equals(stops.get(i).getStopID())) {
                                     valid = true;
                                     dest = i;
-                                    destName = input;
                                 }
                             }
                         }
@@ -121,7 +120,7 @@ public class RoutePlan
             String[] s = sources[source][dest].split(",", -1);
             String[] d = dests[source][dest].split(",", -1);
 
-            for (int i = 0; i < tripIDs.length; i++)
+            for (int i = 0; i < t.length; i++)
             {
                 if (i != 0)
                 {
@@ -130,7 +129,7 @@ public class RoutePlan
 
                 if (!t[i].equals("a transfer"))
                 {
-                    res += " trip ID ";
+                    res += "trip ID ";
                 }
 
                 res += t[i] + " from " + s[i] + " to " + d[i] + ".";
@@ -143,7 +142,8 @@ public class RoutePlan
 
         else
         {
-            res += tripIDs[source][dest] + " from " + sources[source][dest] + " to " + dests[source][dest] + ".";
+            res +=  tripIDs[source][dest] + " from " + sources[source][dest] +
+                    " to " + dests[source][dest] + ".";
 
             if (!tripIDs[source][dest].equals("a transfer"))
             {
@@ -155,6 +155,8 @@ public class RoutePlan
         {
             return "Error";
         }
+
+        res += "\nThe associated cost with this trip is: " + distances[source][dest];
 
         return res;
     }
@@ -184,14 +186,14 @@ public class RoutePlan
         ArrayList<String> enRoute = new ArrayList<String>();
 
         for (int j = 0; j < theStops.length && !finish; j++) {
-            if (!first && theStops[j].equals(sourceName)) {
+            if (!first && theStops[j].equals(source)) {
                 first = true;
             }
 
             if (first) {
                 enRoute.add(theStops[j]);
 
-                if (theStops[j].equals(destName)) {
+                if (theStops[j].equals(dest)) {
                     finish = true;
                 }
             }

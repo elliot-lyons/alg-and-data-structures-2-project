@@ -26,7 +26,7 @@ public class MainMenu {
         tripIDs = new String[stops.size()][stops.size()];
         sources = new String[stops.size()][stops.size()];
         dests = new String[stops.size()][stops.size()];
-        distances = createDistances(stops);
+        distances = createDistances();
         firstRoute = true;
 
         firstStop = true;
@@ -91,7 +91,7 @@ public class MainMenu {
         return result;
     }
 
-    public double[][] createDistances(ArrayList<Stop> stops) {
+    public double[][] createDistances() {
         double[][] result = new double[stops.size()][stops.size()];
 
         for (int i = 0; i < stops.size(); i++) {
@@ -125,8 +125,10 @@ public class MainMenu {
                 ArrayList<Integer> sequences = new ArrayList<Integer>();
 
                 String tripID = line[0];
+                String prevTripID = "";
 
                 String stopID = line[3];
+
                 int sequence = Integer.parseInt(line[4]);
 
                 Trip trip = new Trip(tripID);
@@ -138,12 +140,6 @@ public class MainMenu {
                             maxIndex = sequence;
                         }
 
-//                        if (tripID.equals("12960508"))
-//                        {
-//                            System.out.println("yes");
-//                            System.out.println(stopID);
-//                        }
-
                         stopIDs.add(stopID);
                         sequences.add(sequence);
 
@@ -152,6 +148,7 @@ public class MainMenu {
 
                         if (current != null) {
                             line = current.split(",", -1);
+                            prevTripID = tripID;
                             tripID = line[0];
                             stopID = line[3];
                             sequence = Integer.parseInt(line[4]);
@@ -166,14 +163,6 @@ public class MainMenu {
 
                 String[] tripStops = new String[maxIndex];
 
-                if (tripID.equals("12960508"))
-                {
-                    System.out.println("Ok");
-                    for (int i = 0; i < stopIDs.size(); i++) {
-                        System.out.println(stopIDs.get(i));
-                    }
-                }
-
                 for (int i = 0; i < tripStops.length; i++) {
                     int index = sequences.get(i) - 1;
                     String id = stopIDs.get(i);
@@ -187,16 +176,23 @@ public class MainMenu {
                 for (int i = 0; i < tripStops.length; i++)                      // adding in the shortest direct paths
                 {                                                               // between nodes
                     for (int j = i + 1; j < tripStops.length; j++) {
-                        double dis = (double) j - 1;
+                        double dis = (double) j;
+
+                        String one = tripStops[i];
+                        String two = tripStops[j];
+
                         int indexI = findIndex(tripStops[i]);
                         int indexJ = findIndex(tripStops[j]);
+
+                        double dist = result[indexI][indexJ];
+                        String id = tripIDs[indexI][indexJ];
 
                         if (indexI < 0 || indexJ < 0) {
                             System.out.println("Error: indexI: " + indexI + " indexJ " + indexJ);
                         } else {
                             if (dis < result[indexI][indexJ]) {
                                 result[indexI][indexJ] = dis;
-                                tripIDs[indexI][indexJ] = tripID;
+                                tripIDs[indexI][indexJ] = prevTripID;
                                 sources[indexI][indexJ] = tripStops[i];
                                 dests[indexI][indexJ] = tripStops[j];
                             }
@@ -213,42 +209,42 @@ public class MainMenu {
          */
 
         // getting shortest costs from transfers.txt
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader("transit_files//transfers.txt"));
-//            String current = br.readLine();
-//            int count = 1;                  // used for letting user know the line no. of error if there is one in the file
-//
-//            while ((current = br.readLine()) != null) {
-//                String[] line = current.split(",", -1);
-//                count++;
-//
-//                String source = line[0];
-//                String destination = line[1];
-//                int type = Integer.parseInt(line[2]);
-//                double dist = -1;
-//
-//                if (type == 2) {
-//                    dist = Double.parseDouble(line[3]) / 100;
-//                } else if (type == 0) {
-//                    dist = 2;
-//                } else {
-//                    System.out.println("Error, invalid transfer type in transfers.txt for journey from stop: " + source
-//                            + " to stop " + destination + " on line " + count + ".");
-//                }
-//
-//                int indexI = findIndex(source);
-//                int indexJ = findIndex(destination);
-//
-//                if (dist < result[indexI][indexJ]) {
-//                    result[indexI][indexJ] = dist;
-//                    tripIDs[indexI][indexJ] = "a transfer";
-//                    sources[indexI][indexJ] = source;
-//                    dests[indexI][indexJ] = destination;
-//                }
-//            }
-//        } catch (IOException e) {
-//            System.out.println("transfers.txt not found");
-//        }
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_transfers.txt"));
+            String current = br.readLine();
+            int count = 1;                  // used for letting user know the line no. of error if there is one in the file
+
+            while ((current = br.readLine()) != null) {
+                String[] line = current.split(",", -1);
+                count++;
+
+                String source = line[0];
+                String destination = line[1];
+                int type = Integer.parseInt(line[2]);
+                double dist = -1;
+
+                if (type == 2) {
+                    dist = Double.parseDouble(line[3]) / 100;
+                } else if (type == 0) {
+                    dist = 2;
+                } else {
+                    System.out.println("Error, invalid transfer type in transfers.txt for journey from stop: " + source
+                            + " to stop " + destination + " on line " + count + ".");
+                }
+
+                int indexI = findIndex(source);
+                int indexJ = findIndex(destination);
+
+                if (dist < result[indexI][indexJ]) {
+                    result[indexI][indexJ] = dist;
+                    tripIDs[indexI][indexJ] = "a transfer";
+                    sources[indexI][indexJ] = source;
+                    dests[indexI][indexJ] = destination;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("transfers.txt not found");
+        }
 
         return result;
     }
@@ -269,7 +265,6 @@ public class MainMenu {
 
     public void floydWarshall()
     {
-        System.out.println(distances.length);
         for (int i = 0; i < distances.length; i++)
         {
             for (int j = 0; j < distances.length; j++)
