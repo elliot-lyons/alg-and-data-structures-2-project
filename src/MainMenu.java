@@ -82,6 +82,7 @@ public class MainMenu {
             String previous = line[0];
             previous = "n/a";
             boolean first = true;
+            boolean time = true;
 
             while (current != null) {
                 if (first) {
@@ -95,9 +96,8 @@ public class MainMenu {
 
                 String tripID = line[0];
                 String prevTripID = "";
-
                 String stopID = line[3];
-
+                String arrival = line[1];
                 int sequence = Integer.parseInt(line[4]);
 
                 Trip trip = new Trip(tripID);
@@ -105,12 +105,15 @@ public class MainMenu {
 
                 do {
                     try {
-                        if (sequence > maxIndex) {
-                            maxIndex = sequence;
-                        }
+                        time = validTime(arrival);
 
-                        stopIDs.add(stopID);
-                        sequences.add(sequence);
+                        if (time) {
+                            if (sequence > maxIndex) {
+                                maxIndex = sequence;
+                            }
+                            stopIDs.add(stopID);
+                            sequences.add(sequence);
+                        }
 
                         previous = line[0];
                         current = br.readLine();
@@ -120,6 +123,8 @@ public class MainMenu {
                             prevTripID = tripID;
                             tripID = line[0];
                             stopID = line[3];
+                            arrival = line[1];
+                            time = validTime(arrival);
                             sequence = Integer.parseInt(line[4]);
                         } else {
                             break;
@@ -145,7 +150,7 @@ public class MainMenu {
                 for (int i = 0; i < tripStops.length; i++)                      // adding in the shortest direct paths
                 {                                                               // between nodes
                     for (int j = i + 1; j < tripStops.length; j++) {
-                        double dis = (double) j;
+                        double dis = (double) j - i;
 
                         String one = tripStops[i];
                         String two = tripStops[j];
@@ -247,6 +252,28 @@ public class MainMenu {
             }
         }
     }
+
+    public boolean validTime(String time)
+    {
+        try
+        {
+            String[] times = time.split(":", 3);
+            String hour = times[0].replaceAll(" ", "");
+
+            if (Integer.parseInt(hour) > 23)
+            {
+                return false;
+            }
+        }
+
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
     public void display() {
         while (!quit) {
