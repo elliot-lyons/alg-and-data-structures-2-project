@@ -37,6 +37,13 @@ public class MainMenu {
         return quit;
     }
 
+
+    /**
+     *
+     * @return an array list of stops. A stop object contains the id and the name of the stop. The index of these stops
+     * is important in the creation of the distances[][] and tripIDs[][] arrays, as explained below
+     */
+
     public ArrayList<Stop> createStops() {
         ArrayList<Stop> result = new ArrayList<Stop>();
 
@@ -61,8 +68,18 @@ public class MainMenu {
         return result;
     }
 
+    /**
+     *
+     * @return: a 2D double array with all the direct paths from one stop to another stop. This method also updates
+     * a 2D String array of tripIDs. The tripID array represents the trip you take for that quickest path.
+     * i.e. if the cost from a -> b was 3 and the trip you took for that cost was 112, distances[a][b] would be 3 and
+     * tripIDs[a][b] 112. (Slightly different how indexes are calculated, explained below
+     */
+
     public double[][] createDistances() {
         double[][] result = new double[stops.size()][stops.size()];
+
+        // initially we just set the distances between stops to be infinity or if they're the same stop; 0.
 
         for (int i = 0; i < stops.size(); i++) {
             for (int j = 0; j < stops.size(); j++) {
@@ -76,6 +93,8 @@ public class MainMenu {
             }
         }
 
+        // first we get the costs from stop_times.txt
+
         try {
             BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stop_times.txt"));
             String current = br.readLine();
@@ -86,7 +105,7 @@ public class MainMenu {
             boolean time = true;
 
             while (current != null) {
-                if (first) {
+                if (first) {        // if it's the first line of file, we ignore it as it's just a line of column headers
                     current = br.readLine();
                     line = current.split(",", -1);
                     first = false;
