@@ -1,3 +1,7 @@
+/**
+ * @author: Elliot Lyons, 2022
+ */
+
 package src;
 
 import java.util.Scanner;

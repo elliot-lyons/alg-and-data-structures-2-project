@@ -56,7 +56,7 @@ public class RoutePlan
 
                         for (int i = 0; i < stops.size() && !valid; i++)
                         {
-                            if (input.equals(stops.get(i).getStopID()))
+                            if (input.equals(stops.get(i).getStopID())) // confirming stop is in list
                             {
                                 valid = true;
                                 source = i;
@@ -119,7 +119,7 @@ public class RoutePlan
 
         String res = "Take ";
 
-        if (tripIDs[source][dest].contains(","))
+        if (tripIDs[source][dest].contains(","))        // implies that you need to take more than one route
         {
             String[] t = tripIDs[source][dest].split(",", -1);
             String[] s = sources[source][dest].split(",", -1);
@@ -137,10 +137,10 @@ public class RoutePlan
                     res += "trip ID ";
                 }
 
-                res += t[i] + " from " + s[i] + " to " + d[i] + ".";
+                res += t[i] + " from " + s[i] + " to " + d[i] + ".";        // displays where we take the trip to and from
 
-                if (!t[i].equals("a transfer")) {
-                    res = res + "\n" + enRoute(t[i], s[i], d[i]);
+                if (!t[i].equals("a transfer")) {       // if it's not a transfer, we list off the stops you pass on
+                    res = res + "\n" + enRoute(t[i], s[i], d[i]);   // a trip, using enRoute method
                 }
             }
         }
@@ -181,6 +181,16 @@ public class RoutePlan
         return null;
     }
 
+
+    /**
+     *
+     * @param tripID: the current trip ID
+     * @param source: where you get on this trip ID
+     * @param dest: where you get off
+     *
+     * @return a string that details all the stops you pass (including the ones where you embark and disembark)
+     */
+
     public String enRoute(String tripID, String source, String dest)
     {
         String e = "En route you will pass stops: ";
@@ -191,18 +201,20 @@ public class RoutePlan
         ArrayList<String> enRoute = new ArrayList<String>();
 
         for (int j = 0; j < theStops.length && !finish; j++) {
-            if (!first && theStops[j].equals(source)) {
-                first = true;
+            if (!first && theStops[j].equals(source)) {     // don't display stops that bus has already passed before
+                first = true;                               // you get on
             }
 
             if (first) {
                 enRoute.add(theStops[j]);
 
-                if (theStops[j].equals(dest)) {
+                if (theStops[j].equals(dest)) {             // don't display stops that bus will pass after you get off
                     finish = true;
                 }
             }
         }
+
+        // Tidying of output
 
         for (int k = 0; k < enRoute.size() - 1; k++)
         {
