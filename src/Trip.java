@@ -3,7 +3,7 @@ package src;
 public class Trip
 {
     private String tripID;
-    private String[] stops;
+    private String[] stops, arrivalTimes;
 
     Trip(String tripID)
     {
@@ -27,5 +27,14 @@ public class Trip
 
     public String[] getStopIDs() {
         return stops;
+    }
+
+    public void setArrivalTimes(String[] arrivalTimes)
+    {
+        this.arrivalTimes = arrivalTimes;
+    }
+
+    public String[] getArrivalTimes() {
+        return arrivalTimes;
     }
 }
