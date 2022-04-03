@@ -13,7 +13,8 @@ public class MainMenu {
     private ArrayList<Trip> trips;
     private double[][] distances;
     private String[][] tripIDs, sources, dests;
-    RoutePlan routePlan;
+    private RoutePlan routePlan;
+    private ArrivalTime arrivalTime;
 
     public MainMenu(Scanner s) {
         this.s = s;
@@ -93,6 +94,7 @@ public class MainMenu {
 
                 ArrayList<String> stopIDs = new ArrayList<String>();
                 ArrayList<Integer> sequences = new ArrayList<Integer>();
+                ArrayList<String> arrivals = new ArrayList<String>();
 
                 String tripID = line[0];
                 String prevTripID = "";
@@ -113,6 +115,7 @@ public class MainMenu {
                             }
                             stopIDs.add(stopID);
                             sequences.add(sequence);
+                            arrivals.add(arrival);
                         }
 
                         previous = line[0];
@@ -123,7 +126,7 @@ public class MainMenu {
                             prevTripID = tripID;
                             tripID = line[0];
                             stopID = line[3];
-                            arrival = line[1];
+                            arrival = line[1].replaceAll(" ", "0");
                             time = validTime(arrival);
                             sequence = Integer.parseInt(line[4]);
                         } else {
@@ -136,30 +139,27 @@ public class MainMenu {
                 } while (tripID.equals(previous));
 
                 String[] tripStops = new String[maxIndex];
+                String[] arrivalTimes = new String[maxIndex];
 
                 for (int i = 0; i < tripStops.length; i++) {
                     int index = sequences.get(i) - 1;
                     String id = stopIDs.get(i);
+                    String tiempo = arrivals.get(i);
                     tripStops[index] = id;
+                    arrivalTimes[index] = tiempo;
                 }
 
                 trip.setStops(tripStops);
+                trip.setArrivalTimes(arrivalTimes);
                 trips.add(trip);
-
 
                 for (int i = 0; i < tripStops.length; i++)                      // adding in the shortest direct paths
                 {                                                               // between nodes
                     for (int j = i + 1; j < tripStops.length; j++) {
                         double dis = (double) j - i;
 
-                        String one = tripStops[i];
-                        String two = tripStops[j];
-
                         int indexI = findIndex(tripStops[i]);
                         int indexJ = findIndex(tripStops[j]);
-
-                        double dist = result[indexI][indexJ];
-                        String id = tripIDs[indexI][indexJ];
 
                         if (indexI < 0 || indexJ < 0) {
                             System.out.println("Error: indexI: " + indexI + " indexJ " + indexJ);
@@ -225,7 +225,6 @@ public class MainMenu {
                 return i;
             }
         }
-
         return -1;
     }
 
@@ -289,6 +288,7 @@ public class MainMenu {
                 switch (input) {
                     case "1": {
                         if (firstRoute) {
+                            System.out.println("This will tell you the quickest path from one stop to another!");
                             firstRoute = false;
                             floydWarshall();
                             routePlan = new RoutePlan(s, distances, tripIDs, stops, trips, sources, dests);
@@ -305,7 +305,11 @@ public class MainMenu {
                     }
 
                     case "3": {
-                        ArrivalTime arrivalTime = new ArrivalTime(s, trips);
+                        if (firstArrive) {
+                            System.out.println("This will tell you all trips that arrive at a stop at a specific time!");
+                            arrivalTime = new ArrivalTime(s, trips);
+                            firstArrive = false;
+                        }
                         arrivalTime.display();
                         break;
                     }
