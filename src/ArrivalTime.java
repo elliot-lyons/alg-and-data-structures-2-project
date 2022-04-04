@@ -34,7 +34,12 @@ public class ArrivalTime
                     " or 'back' to return home:");
             String input = s.nextLine();
 
-            if (input.equals("back"))
+            if (input.equals(null))
+            {
+                valid = false;
+            }
+
+            else if (input.equals("back"))
             {
                 return;
             }
@@ -43,12 +48,7 @@ public class ArrivalTime
 
             // below is all error handling of user input
 
-            if (input.equals(null))
-            {
-                valid = false;
-            }
-
-            else if (inputs.length == 3)     // if not the case, user didn't put in 2 ':'. This means input = invalid
+            if (inputs.length == 3)     // if not the case, user didn't put in 2 ':'. This means input = invalid
             {
                 for (int i = 0; i < inputs.length; i++)
                 {

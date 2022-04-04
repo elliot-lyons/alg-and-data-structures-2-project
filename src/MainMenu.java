@@ -68,9 +68,9 @@ public class MainMenu {
 
                 String data = "";
                 data += "Stop ID: " + id;
-                data += " Stop code: " + line[1];
-                data += " Stop latitude: " + line[4];
-                data += " Stop longitude " + line[5];
+                data += ". Stop code: " + line[1];
+                data += ". Stop latitude: " + line[4];
+                data += ". Stop longitude: " + line[5] + ".";
 
                 tst.put(name, data);
                 result.add(s);
@@ -90,22 +90,23 @@ public class MainMenu {
      */
     public String meaningfulName(String stopName)
     {
-        if (stopName.contains("Northbound")) {
+
+        if (stopName.lastIndexOf("Northbound") == 0) {
             stopName = stopName.replaceAll("Northbound ", "");
             return stopName + " Northbound";
         }
 
-        else if (stopName.contains("Southbound")) {
+        else if (stopName.lastIndexOf("Southbound") == 0) {
             stopName = stopName.replaceAll("Southbound ", "");
             return stopName + " Southbound";
         }
 
-        else if (stopName.contains("Eastbound")) {
+        else if (stopName.lastIndexOf("Eastbound") == 0) {
             stopName = stopName.replaceAll("Eastbound ", "");
             return stopName + " Eastbound";
         }
 
-        else if (stopName.contains("Westbound")) {
+        else if (stopName.lastIndexOf("Westbound") == 0) {
             stopName = stopName.replaceAll("Westbound ", "");
             return stopName + " Westbound";
         }
