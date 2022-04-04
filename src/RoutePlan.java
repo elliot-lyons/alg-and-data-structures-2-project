@@ -7,18 +7,19 @@ public class RoutePlan
 {
     private boolean back, valid;
     private String input, sourceName, destName;
-    private int source, dest;
+    private String source, dest;
     private Scanner s;
     private double[][] distances;
     private String[][] tripIDs, sources, dests;
     private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
+    private DijkstraAllPairsSP dijk;
 
-    RoutePlan(Scanner s, double[][] distances, String[][] tripIDs, ArrayList<Stop> stops, ArrayList<Trip> trips,
+    RoutePlan(Scanner s, DijkstraAllPairsSP dijk, String[][] tripIDs, ArrayList<Stop> stops, ArrayList<Trip> trips,
             String[][] sources, String[][] dests)
     {
         this.s = s;
-        this.distances = distances;
+        this.dijk = dijk;
         this.tripIDs = tripIDs;
         this.stops = stops;
         this.trips = trips;
@@ -59,8 +60,7 @@ public class RoutePlan
                     for (int i = 0; i < stops.size() && !valid; i++) {
                         if (input.equals(stops.get(i).getStopID())) { // confirming stop is in list
                             valid = true;
-                            source = i;
-                            sourceName = input;
+                            source = input;
                         }
                     }
                 }
@@ -89,7 +89,7 @@ public class RoutePlan
                             for (int i = 0; i < stops.size() && !valid; i++) {
                                 if (input.equals(stops.get(i).getStopID())) {
                                     valid = true;
-                                    dest = i;
+                                    dest = input;
                                 }
                             }
                         }
@@ -97,72 +97,114 @@ public class RoutePlan
 
                 } while (!valid);
 
-                System.out.println(tripInstructions());
+             otherTripInstructions();
 
             }
         } while (!back);
     }
 
-    public String tripInstructions()
+//    public String tripInstructions()
+//    {
+//        if (distances[source][dest] == Double.POSITIVE_INFINITY)
+//        {
+//            return "There is no route from this source to this destination";
+//        }
+//
+//        if (source == dest)
+//        {
+//            return "These stops are the same, the associated cost is 0.";
+//        }
+//
+//        String res = "Take ";
+//
+//        if (tripIDs[source][dest].contains(","))        // implies that you need to take more than one route
+//        {
+//            String[] t = tripIDs[source][dest].split(",", -1);
+//            String[] s = sources[source][dest].split(",", -1);
+//            String[] d = dests[source][dest].split(",", -1);
+//
+//            for (int i = 0; i < t.length; i++)
+//            {
+//                if (i != 0)
+//                {
+//                    res += "\nThen take ";
+//                }
+//
+//                if (!t[i].equals("a transfer"))
+//                {
+//                    res += "trip ID ";
+//                }
+//
+//                res += t[i] + " from " + s[i] + " to " + d[i] + ".";        // displays where we take the trip to and from
+//
+//                if (!t[i].equals("a transfer")) {       // if it's not a transfer, we list off the stops you pass on
+//                    res = res + "\n" + enRoute(t[i], s[i], d[i]);   // a trip, using enRoute method
+//                }
+//            }
+//        }
+//
+//        else
+//        {
+//            res +=  tripIDs[source][dest] + " from " + sources[source][dest] +
+//                    " to " + dests[source][dest] + ".";
+//
+//            if (!tripIDs[source][dest].equals("a transfer"))
+//            {
+//                res = res + "\n" + enRoute(tripIDs[source][dest], sources[source][dest], dests[source][dest]);
+//            }
+//        }
+//
+//        if (res.equals("Take "))
+//        {
+//            return "Error";
+//        }
+//
+//        res += "\nThe associated cost with this trip is: " + distances[source][dest] + ".";
+//
+//        return res;
+//    }
+
+    public void otherTripInstructions()
     {
-        if (distances[source][dest] == Double.POSITIVE_INFINITY)
+        String res = "";
+
+        if (!dijk.hasPath(findIndex(source), findIndex(dest)))
         {
-            return "There is no route from this source to this destination";
+            valid = false;
+            return;
         }
 
-        if (source == dest)
+        String x = dijk.path(findIndex(source), findIndex(dest)).toString();
+        String stopsArray[] = x.split("->", -1);
+        ArrayList<Integer> theStops = new ArrayList<Integer>();
+
+        for (int i = 0; i < stopsArray.length; i++)
         {
-            return "These stops are the same, the associated cost is 0.";
-        }
-
-        String res = "Take ";
-
-        if (tripIDs[source][dest].contains(","))        // implies that you need to take more than one route
-        {
-            String[] t = tripIDs[source][dest].split(",", -1);
-            String[] s = sources[source][dest].split(",", -1);
-            String[] d = dests[source][dest].split(",", -1);
-
-            for (int i = 0; i < t.length; i++)
-            {
-                if (i != 0)
-                {
-                    res += "\nThen take ";
-                }
-
-                if (!t[i].equals("a transfer"))
-                {
-                    res += "trip ID ";
-                }
-
-                res += t[i] + " from " + s[i] + " to " + d[i] + ".";        // displays where we take the trip to and from
-
-                if (!t[i].equals("a transfer")) {       // if it's not a transfer, we list off the stops you pass on
-                    res = res + "\n" + enRoute(t[i], s[i], d[i]);   // a trip, using enRoute method
-                }
+            if (i != 0) {
+                String[] y = stopsArray[i].split(" ", -1);
+                theStops.add(Integer.parseInt(y[0]));
             }
         }
 
-        else
-        {
-            res +=  tripIDs[source][dest] + " from " + sources[source][dest] +
-                    " to " + dests[source][dest] + ".";
+        ArrayList<String> s = new ArrayList<String>();
 
-            if (!tripIDs[source][dest].equals("a transfer"))
-            {
-                res = res + "\n" + enRoute(tripIDs[source][dest], sources[source][dest], dests[source][dest]);
-            }
+        s.add(source);
+
+        for (int i = theStops.size() - 1; i >= 0; i--)
+        {
+            s.add(findStop(theStops.get(i)));
         }
 
-        if (res.equals("Take "))
+        for (int i = 0; i < s.size(); i++)
         {
-            return "Error";
+            res += s.get(i) + "\n";
         }
 
-        res += "\nThe associated cost with this trip is: " + distances[source][dest] + ".";
-
-        return res;
+        System.out.println("Stops passed:");
+        System.out.println(res);
+        System.out.println("Cost: " + dijk.dist(findIndex(source), findIndex(dest)));
     }
+
 
     public Trip getTripByID(String tripID)
     {
@@ -222,5 +264,19 @@ public class RoutePlan
         e = e + enRoute.get(enRoute.size() - 1) + ".";
 
         return e;
+    }
+
+    public int findIndex(String stopID) {
+        for (int i = 0; i < stops.size(); i++) {
+            if (stops.get(i).getStopID().equals(stopID)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public String findStop(int index)
+    {
+        return stops.get(index).getStopID();
     }
 }
