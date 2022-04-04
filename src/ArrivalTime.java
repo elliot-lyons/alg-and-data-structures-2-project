@@ -39,7 +39,7 @@ public class ArrivalTime
                 valid = false;
             }
 
-            else if (input.equals("back"))
+            else if (input.equalsIgnoreCase("back"))
             {
                 return;
             }

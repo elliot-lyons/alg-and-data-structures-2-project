@@ -48,30 +48,22 @@ public class RoutePlan
                     valid = false;
                 }
 
+                else if (input.equalsIgnoreCase("back")) {
+                    return;
+                }
+
                 else
                 {
-                    switch (input)
-                    {
-                        case ("back"):
-                        {
-                            return;
-                        }
+                    valid = false;
 
-                        default: {
-                            valid = false;
-
-                            for (int i = 0; i < stops.size() && !valid; i++) {
-                                if (input.equals(stops.get(i).getStopID())) // confirming stop is in list
-                                {
-                                    valid = true;
-                                    source = i;
-                                    sourceName = input;
-                                }
-                            }
+                    for (int i = 0; i < stops.size() && !valid; i++) {
+                        if (input.equals(stops.get(i).getStopID())) { // confirming stop is in list
+                            valid = true;
+                            source = i;
+                            sourceName = input;
                         }
                     }
                 }
-
             } while (!valid);
 
             valid = true;
