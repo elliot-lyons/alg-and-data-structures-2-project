@@ -9,26 +9,32 @@ import java.util.Scanner;
 public class MainMenu {
     private boolean quit, first, firstRoute, firstStop, firstArrive;
     private Scanner s;
+
     private ArrayList<Stop> stops;
     private ArrayList<Trip> trips;
+
     private double[][] distances;
     private String[][] tripIDs, sources, dests;
+    private TST<String> tst;
+
     private RoutePlan routePlan;
     private ArrivalTime arrivalTime;
+    private StopInfo stopInfo;
 
     public MainMenu(Scanner s) {
         this.s = s;
         quit = false;
         first = true;
 
+        tst = new TST<String>();
         stops = createStops();
         trips = new ArrayList<Trip>();
         tripIDs = new String[stops.size()][stops.size()];
         sources = new String[stops.size()][stops.size()];
         dests = new String[stops.size()][stops.size()];
         distances = createDistances();
-        firstRoute = true;
 
+        firstRoute = true;
         firstStop = true;
         firstArrive = true;
     }
@@ -46,6 +52,7 @@ public class MainMenu {
 
     public ArrayList<Stop> createStops() {
         ArrayList<Stop> result = new ArrayList<Stop>();
+        int count = 0;
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stops.txt"));
@@ -58,6 +65,14 @@ public class MainMenu {
                 String name = meaningfulName(line[2]);
 
                 Stop s = new Stop(id, name);
+
+                String data = "";
+                data += "Stop ID: " + id;
+                data += " Stop code: " + line[1];
+                data += " Stop latitude: " + line[4];
+                data += " Stop longitude " + line[5];
+
+                tst.put(name, data);
                 result.add(s);
             }
 
@@ -75,12 +90,27 @@ public class MainMenu {
      */
     public String meaningfulName(String stopName)
     {
-        String result = "";
+        if (stopName.contains("Northbound")) {
+            stopName = stopName.replaceAll("Northbound ", "");
+            return stopName + " Northbound";
+        }
 
-        // if (stopName.contains("N"))
-        // {}
+        else if (stopName.contains("Southbound")) {
+            stopName = stopName.replaceAll("Southbound ", "");
+            return stopName + " Southbound";
+        }
 
-        return result;
+        else if (stopName.contains("Eastbound")) {
+            stopName = stopName.replaceAll("Eastbound ", "");
+            return stopName + " Eastbound";
+        }
+
+        else if (stopName.contains("Westbound")) {
+            stopName = stopName.replaceAll("Westbound ", "");
+            return stopName + " Westbound";
+        }
+
+        return stopName;
     }
 
 
@@ -384,7 +414,12 @@ public class MainMenu {
                     }
 
                     case "2": {
-                        StopInfo stopInfo = new StopInfo(s);
+                        if (firstStop)
+                        {
+                            System.out.println("This will display information of a certain stop!");
+                            stopInfo = new StopInfo(s, tst);
+                        }
+
                         stopInfo.display();
                         break;
                     }
@@ -406,7 +441,6 @@ public class MainMenu {
 
                     default: {
                         System.out.println("Invalid input");
-                        first = true;
                     }
                 }
             } catch (Exception e) {
