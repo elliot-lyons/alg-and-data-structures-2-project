@@ -43,29 +43,27 @@ public class RoutePlan
 
                 input = s.nextLine();
 
-                switch (input)
+                if (input.equals(null))
                 {
-                    case ("back"):
-                    {
-                        return;
-                    }
+                    valid = false;
+                }
 
-                    default:
-                    {
-                        valid = false;
+                else if (input.equalsIgnoreCase("back")) {
+                    return;
+                }
 
-                        for (int i = 0; i < stops.size() && !valid; i++)
-                        {
-                            if (input.equals(stops.get(i).getStopID())) // confirming stop is in list
-                            {
-                                valid = true;
-                                source = i;
-                                sourceName = input;
-                            }
+                else
+                {
+                    valid = false;
+
+                    for (int i = 0; i < stops.size() && !valid; i++) {
+                        if (input.equals(stops.get(i).getStopID())) { // confirming stop is in list
+                            valid = true;
+                            source = i;
+                            sourceName = input;
                         }
                     }
                 }
-
             } while (!valid);
 
             valid = true;

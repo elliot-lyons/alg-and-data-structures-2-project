@@ -34,7 +34,12 @@ public class ArrivalTime
                     " or 'back' to return home:");
             String input = s.nextLine();
 
-            if (input.equals("back"))
+            if (input.equals(null))
+            {
+                valid = false;
+            }
+
+            else if (input.equalsIgnoreCase("back"))
             {
                 return;
             }
@@ -104,29 +109,29 @@ public class ArrivalTime
                                     chosen.get(0).getTripID() + ". Which stops at:");
                         }
 
-                            for (int i = 0; i < chosen.size(); i++) {       // listing off those trips
-                                System.out.println("Trip: " + chosen.get(i).getTripID() + ". Which stops at:");
-                                String x = "";
-                                String[] theStops = chosen.get(i).getStopIDs();
-                                int theStop = here.get(i);
+                        for (int i = 0; i < chosen.size(); i++) {       // listing off those trips
+                            System.out.println("Trip: " + chosen.get(i).getTripID() + ". Which stops at:");
+                            String x = "";
+                            String[] theStops = chosen.get(i).getStopIDs();
+                            int theStop = here.get(i);
 
-                                for (int j = 0; j < theStops.length; j++) {     // listing off the stops of that trip
-                                    if (j > 0)
-                                    {
-                                        x += "\n";
-                                    }
-
-                                    x += theStops[j];
-
-                                    if (j == theStop)       // pointing out the stop at which a bus arrives at that
-                                    {                       // time
-                                        x += " - The bus arrives at this stop at: " + time + ".";
-                                    }
+                            for (int j = 0; j < theStops.length; j++) {     // listing off the stops of that trip
+                                if (j > 0)
+                                {
+                                    x += "\n";
                                 }
 
-                                x += "\n----------------------------------\n";
-                                System.out.println(x);
+                                x += theStops[j];
+
+                                if (j == theStop)       // pointing out the stop at which a bus arrives at that
+                                {                       // time
+                                    x += " - The bus arrives at this stop at: " + time + ".";
+                                }
                             }
+
+                            x += "\n----------------------------------\n";
+                            System.out.println(x);
+                        }
                     }
                     else
                     {
