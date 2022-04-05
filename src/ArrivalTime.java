@@ -1,3 +1,7 @@
+/**
+ * Deals with part 3 of assignment
+ */
+
 package src;
 
 import java.util.ArrayList;
@@ -34,7 +38,7 @@ public class ArrivalTime
                     " or 'back' to return to main menu.:");
             String input = s.nextLine();
 
-            if (input.equals(null))
+            if (input.equals(null) || input.length() == 0)
             {
                 valid = false;
             }
@@ -52,16 +56,16 @@ public class ArrivalTime
             {
                 for (int i = 0; i < inputs.length; i++)
                 {
-                    inputs[i] = inputs[i].replaceAll(" ", ""); // if user decided to add spaces, eliminate them
-                    String current = inputs[i];
+                    inputs[i] = inputs[i].replaceAll(" ", ""); // if user decided to add spaces,
+                    String current = inputs[i];                                // eliminate them
 
-                    if (current.length() > 2 || current.length() == 0)        // no time value is greater than 2 digits
-                    {                                                         // or less than 1
+                    if (current.length() > 2 || current.length() == 0)         // no time value is greater than 2 digits
+                    {                                                          // or less than 1
                         valid = false;
                     }
 
                     if (current.length() < 2)               // person may have forgotten to add a zero in a place
-                    {                                       // ie 7 instead of 07
+                    {                                       // ie 7 instead of 07, if so correct the,
                         inputs[i] = "0" + current;
                     }
 
@@ -92,7 +96,7 @@ public class ArrivalTime
 
                         if (search > -1)         // if it's present in said trip
                         {
-                            here.add(search);       // recording index of stop so we can point it out in output
+                            here.add(search);           // recording index of stop so we can point it out in output
                             chosen.add(trips.get(i));   // recording trip it's present in
                         }
                     }
@@ -105,8 +109,7 @@ public class ArrivalTime
                         }
 
                         else {
-                            System.out.println("There is one trip with this arrival time, Trip: " +
-                                    chosen.get(0).getTripID() + ". Which stops at:");
+                            System.out.println("There is one trip with this arrival time:");
                         }
 
                         for (int i = 0; i < chosen.size(); i++) {       // listing off those trips
@@ -152,7 +155,7 @@ public class ArrivalTime
      *
      * @param theArray: array of arrival times
      * @param theString: the arrival time we're looking for
-     * @param min: min and max used for keepin track of where we're searching in array
+     * @param min: min and max used for keeping track of where we're searching in array
      * @param max
      *
      * @return: the index that the time is stored at if it's in array, if not -1

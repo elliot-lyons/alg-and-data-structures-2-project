@@ -1,4 +1,6 @@
 /**
+ * Runs the program.
+ *
  * @author: Elliot Lyons, 2022
  */
 
@@ -6,7 +8,7 @@ package src;
 
 import java.util.Scanner;
 
-public class TransitLink                    // the main class where the program is run
+public class TransitLink
 {
     public static final Scanner s = new Scanner(System.in);
 

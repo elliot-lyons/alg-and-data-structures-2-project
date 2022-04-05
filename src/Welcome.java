@@ -1,8 +1,12 @@
+/**
+ * Simple class that welcomes user to program.
+ */
+
 package src;
 
 import java.util.Scanner;
 
-public class Welcome                    // Welcoming the user to the program
+public class Welcome
 {
     private boolean next, first;
     private Scanner s;
@@ -24,9 +28,11 @@ public class Welcome                    // Welcoming the user to the program
 
         while (!next) {
             if (first) {
-                System.out.println("Welcome to the TransLink bus route planner! Please press 1 to continue");
+                System.out.print("Welcome to the TransLink bus route planner! ");
                 first = false;
             }
+
+            System.out.println("Please press 1 to continue.");
 
             try {
                 String input = s.nextLine();
@@ -34,8 +40,7 @@ public class Welcome                    // Welcoming the user to the program
                 if (input.equals("1")) {
                     next = true;
                 } else {
-                    first = true;
-                    System.out.println("Invalid input");
+                    System.out.print("Invalid input. ");
                 }
             } catch (Exception e) {
             }

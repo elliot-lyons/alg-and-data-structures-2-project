@@ -1,39 +1,5 @@
 /******************************************************************************
- *  Compilation:  javac TST.java
- *  Execution:    java TST < words.txt
- *  Dependencies: StdIn.java
- *  Data files:   https://algs4.cs.princeton.edu/52trie/shellsST.txt
- *
- *  Symbol table with string keys, implemented using a ternary search
- *  trie (TST).
- *
- *
- *  % java TST < shellsST.txt
- *  keys(""):
- *  by 4
- *  sea 6
- *  sells 1
- *  she 0
- *  shells 3
- *  shore 7
- *  the 5
- *
- *  longestPrefixOf("shellsort"):
- *  shells
- *
- *  keysWithPrefix("shor"):
- *  shore
- *
- *  keysThatMatch(".he.l."):
- *  shells
- *
- *  % java TST
- *  theory the now is the time for all good men
- *
- *  Remarks
- *  --------
- *    - can't use a key that is the empty string ""
- *
+ * Adapted from: https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
  ******************************************************************************/
 
 package src;

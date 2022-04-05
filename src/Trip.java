@@ -1,3 +1,7 @@
+/**
+ * Stores a trip that contains where the bus stops at on said trip and at what time it does so for each stop.
+ */
+
 package src;
 
 public class Trip

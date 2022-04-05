@@ -1,3 +1,7 @@
+/**
+ * Main menu of program where user decides what it is they wish to do.
+ */
+
 package src;
 
 import java.io.BufferedReader;
@@ -15,7 +19,6 @@ public class MainMenu {
 
     private TST<String> tst;
     private EdgeWeightedDigraph ewd;
-
 
     private RoutePlan routePlan;
     private ArrivalTime arrivalTime;
@@ -44,11 +47,13 @@ public class MainMenu {
 
 
     /**
+     * This method reads in the stops.txt file. It creates an array list of stops objects. The index of these stop
+     * objects are the vertex for which that stop is stored in the EdgeWeightDigraph
      *
-     * @return an array list of stops. A stop object contains the id and the name of the stop. The index of these stops
-     * is important in the creation of the EdgeWeightedDigraph belw
+     * Also a TST is created from the stops.txt file. We use the stop name as the key and store the data of the
+     * associated stop that we then relay back to the user should they search for that specific stop for part 2 of
+     * assignment.
      */
-
     public void createStops() {
         int count = 0;
 
@@ -60,7 +65,7 @@ public class MainMenu {
                 String[] line = current.split(",", -1);
 
                 String id = line[0];
-                String name = meaningfulName(line[2]);
+                String name = meaningfulName(line[2]);  // storing NB/SB/EB/WB at the end of name, as per spec
 
                 Stop s = new Stop(id, name);
 
@@ -79,7 +84,9 @@ public class MainMenu {
         }
     }
 
+
     /**
+     * To give part 2 of assignment more utility, as per project spec
      *
      * @param stopName: A 'raw' name read in from stops.txt
      * @return that stopName with the appropriate modifications (moving 'North/South/East/Westbound to end of name)
@@ -110,9 +117,13 @@ public class MainMenu {
         return stopName;
     }
 
+
+    /**
+     * Creating a graph of directed edges from one stop to another. This is used for part one of assignment
+     */
     public void createDigraph()
     {
-        try {
+        try {               // first we store vertexes from stop_times.txt
             BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
             String current = br.readLine();
             String[] line = current.split(",", -1);
@@ -122,7 +133,7 @@ public class MainMenu {
             boolean time = true;
 
             while (current != null) {
-                if (first) {        // if it's the first line of file, we ignore it as it's just a line of column headers
+                if (first) {       // if it's the first line of file, we ignore it as it's just a line of column headers
                     current = br.readLine();
                     line = current.split(",", -1);
                     first = false;
@@ -138,7 +149,7 @@ public class MainMenu {
                 int sequence = Integer.parseInt(line[4]);
 
                 Trip trip = new Trip(tripID);       // creating a trip object which stores the tripId of said trip as
-                int maxIndex = 0;                   // well as the stops
+                int maxIndex = 0;                   // well as where bus stops on trip and the times it does so
 
                 do {
                     try {
@@ -146,7 +157,7 @@ public class MainMenu {
 
                         if (time) {
                             if (sequence > maxIndex) {      // try to find the last stop in the sequence, this tells
-                                maxIndex = sequence;        // us how long the array of stopIds need to be
+                                maxIndex = sequence;        // us how long the arrays of data need to be
                             }
                             stopIDs.add(stopID);            // for time being we add the data associated with this stop
                             sequences.add(sequence);        // to lists of those pieces of data
@@ -188,14 +199,21 @@ public class MainMenu {
                     arrivalTimes[index] = tiempo;
                 }
 
+                // once the data for said trip is in correct order we store it in the current trip object
+
                 trip.setStops(tripStops);
                 trip.setArrivalTimes(arrivalTimes);
+
+                // we have all data we need now in the trip object, so store it in the ArrayList of those trip objects
+
                 trips.add(trip);
 
-                for (int i = 0; i < tripStops.length - 1; i++)                      // adding in the shortest direct paths
-                {                                                               // between nodes
-//                    System.out.println("i: " + tripStops[i]);
-//                    System.out.println("i++ " + tripStops[i+1]);
+                // adding in directed edges between stops. If stops are consecutive, their weight is 1. Again the place
+                // these stops are in the ArrayList of stops, is their vertex. So we find the two indexes of those
+                // specific stops before we store the distance between them in an edge and consequently the graph
+
+                for (int i = 0; i < tripStops.length - 1; i++)
+                {
                     DirectedEdge edge = new DirectedEdge(findIndex(tripStops[i]), findIndex(tripStops[i+1]), 1);
                     ewd.addEdge(edge);
                 }
@@ -230,6 +248,8 @@ public class MainMenu {
                 int sIndex = findIndex(source);
                 int dIndex = findIndex(destination);
 
+                // Same approach as above, except we don't store the data as a trip because it's a transfer
+
                 DirectedEdge edge = new DirectedEdge(sIndex, dIndex, dist);
                 ewd.addEdge(edge);
             }
@@ -243,19 +263,11 @@ public class MainMenu {
     /**
      *
      * @param stopID: passes in a stopId that we wish to know index of
-     * @return the index of that stop within the stops list
+     * @return the index of that stop within the stops list (-1 if said stop doesn't exist)
      *
-     * This is a really important method for the program. The program reads in the stops first and adds them to a list
-     * of stops, storing their stopID and their name. We use the index of these stops in other elements. Ie, if we read
-     * a stop with id "111" in first, we add it to the stops ArrayList. This means its index will be 0. Then if we read
-     * in stop with id "212" as the fourth entry in stops.txt, its index in the stops ArrayList will be 3.
-     *
-     * This is really important when we go to create our distances[][] and tripIds[][] arrays. To store the distance
-     * between stops '111' and '212' and then the tripId of this distance, we will need to know where to store them
-     * within those arrays. When we call findIndex(111) we will get returned 0. When we call findIndex(212) we will
-     * get 3. We can then store the distance between these two nodes in distances[0][3] and the id(s) of this trip
-     * in tripIDs[0][3]. It doesn't make sense to store them in distances[111][212] as the program only uses the indexes
-     * in the list of stops to identify the stops, not the ids when storing information about them.
+     * As above the vertexes in the graph aren't represented by the stopIds themselves. Instead they're represented by
+     * the index of that stopId within the ArrayList of stops. Because of this we need a method to find said index so
+     * we can create DirectedEdges. The below method allows us to do so.
      */
     public int findIndex(String stopID) {
         for (int i = 0; i < stops.size(); i++) {
@@ -265,6 +277,7 @@ public class MainMenu {
         }
         return -1;
     }
+
 
     /**
      *
@@ -293,6 +306,9 @@ public class MainMenu {
     }
 
 
+    /**
+     * The UI of the program
+     */
     public void display() {
         while (!quit) {
             System.out.println("Please choose from one of the following options by pressing the corresponding key:");
@@ -306,6 +322,10 @@ public class MainMenu {
 
                 switch (input) {
                     case "1": {
+
+                        // Below only done if user's first time pressing 1 in main menu. Similar if statements for
+                        // other two inputs as well
+
                         if (firstRoute) {
                             System.out.println("This will tell you the quickest path from one stop to another!");
                             firstRoute = false;

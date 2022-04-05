@@ -1,13 +1,5 @@
 /******************************************************************************
- *  Compilation:  javac EdgeWeightedDigraph.java
- *  Execution:    java EdgeWeightedDigraph digraph.txt
- *  Dependencies: Bag.java DirectedEdge.java
- *  Data files:   https://algs4.cs.princeton.edu/44sp/tinyEWD.txt
- *                https://algs4.cs.princeton.edu/44sp/mediumEWD.txt
- *                https://algs4.cs.princeton.edu/44sp/largeEWD.txt
- *
- *  An edge-weighted digraph, implemented using adjacency lists.
- *
+ *  Adapted from: https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EdgeWeightedDigraph.java.html
  ******************************************************************************/
 
 package src;

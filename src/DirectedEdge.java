@@ -1,10 +1,5 @@
 /******************************************************************************
- *  Compilation:  javac DirectedEdge.java
- *  Execution:    java DirectedEdge
- *  Dependencies: StdOut.java
- *
- *  Immutable weighted directed edge.
- *
+    Adapted from: https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEdge.java.html
  ******************************************************************************/
 
 package src;

@@ -1,10 +1,5 @@
 /******************************************************************************
- *  Compilation:  javac IndexMinPQ.java
- *  Execution:    java IndexMinPQ
- *  Dependencies: StdOut.java
- *
- *  Minimum-oriented indexed PQ implementation using a binary heap.
- *
+ *  Adapted from: https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/IndexMinPQ.java.html
  ******************************************************************************/
 
 package src;

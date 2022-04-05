@@ -1,3 +1,7 @@
+/**
+ * Deals with part 1 of assignment
+ */
+
 package src;
 
 import java.util.ArrayList;
@@ -5,7 +9,7 @@ import java.util.Scanner;
 
 public class RoutePlan
 {
-    private boolean back, valid, route;
+    private boolean back, valid;
     private String input, source, dest;
     private Scanner s;
     private ArrayList<Stop> stops;
@@ -23,7 +27,6 @@ public class RoutePlan
     {
         back = false;
         valid = true;
-        route = true;
 
         do
         {
@@ -33,17 +36,11 @@ public class RoutePlan
                     System.out.print("Invalid input. ");
                 }
 
-                if (!route)
-                {
-                    System.out.print("No route between specified stops. ");
-                    route = true;
-                }
-
                 System.out.println("Please enter a source stop ID or 'back' to return to main menu:");
 
                 input = s.nextLine();
 
-                if (input.equals(null))
+                if (input.equals(null) || input.length() == 0)
                 {
                     valid = false;
                 }
@@ -96,20 +93,32 @@ public class RoutePlan
 
                 } while (!valid);
 
-             tripInstructions();
+             tripDetails();
 
             }
         } while (!back);
     }
 
-    public void tripInstructions() {
+
+    /**
+     * Method that performs Dijkstra on two passed stopIds. This method is only called if the stopIDs exist, so no
+     * risk of potential errors related to a stopId not existing arise.
+     *
+     * Outputs the details of quickest route between two stops (ie the stops passed from one stop to another and the
+     * cost of said trip). If no route between the two exist we output that to the user. As above all other errors
+     * are taken care of before we reach this method.
+     */
+    public void tripDetails() {
         String res = "";
 
         dijk = new DijkstraSP(weightedDigraph, findIndex(source));
 
-        if (dijk.hasPathTo(findIndex(dest))) {
-            String x = dijk.pathTo(findIndex(dest)).toString();
-            String stopsArray[] = x.split("->", -1);
+        if (dijk.hasPathTo(findIndex(dest))) {                     // if there is a path between nodes
+            String x = dijk.pathTo(findIndex(dest)).toString();    // store path in string
+            String stopsArray[] = x.split("->", -1);    // breaks the path up to try separate stops
+
+            // next few lines of code deal with breaking up the path we got from Dijkstra and storing it in a String
+            // that the user will be able to understand
 
             ArrayList<Integer> theStops = new ArrayList<Integer>();
 
@@ -124,15 +133,15 @@ public class RoutePlan
 
             s.add(source);
 
-            for (int i = theStops.size() - 1; i >= 0; i--) {
-                s.add(findStop(theStops.get(i)));
+            for (int i = theStops.size() - 1; i >= 0; i--) {        // path has stops in reverse order (destination 1st)
+                s.add(findStop(theStops.get(i)));                   // this loop undoes that
             }
 
-            for (int i = 0; i < s.size(); i++) {
+            for (int i = 0; i < s.size(); i++) {        // once stops are legible and in order, add them to a String
                 res += s.get(i) + "\n";
             }
 
-            System.out.println("Stops passed:");
+            System.out.println("Stops passed:");            // Outputting these stops and the cost of trip
             System.out.println(res);
             System.out.println("Cost: " + dijk.distTo(findIndex(dest)));
         }
@@ -143,6 +152,12 @@ public class RoutePlan
         }
     }
 
+
+    /**
+     * Same method as found in MainMenu
+     * @param stopID: the stop we wish to find the index of
+     * @return: the index (vertex number) for the requested stop (-1 if stop doesn't exist)
+     */
     public int findIndex(String stopID) {
         for (int i = 0; i < stops.size(); i++) {
             if (stops.get(i).getStopID().equals(stopID)) {
@@ -152,8 +167,20 @@ public class RoutePlan
         return -1;
     }
 
+    /**
+     * Reverse of findIndex; tells us the stopId at vertex 'index' in EdgeWeightedDigraph / at index 'index' in stops
+     * ArrayList
+     * @param index: index of stop we want
+     * @return: the associated stopID. ("n/a" if none exist, which should never arise in program as user never calls
+     * this method and because findIndex has already been called before where this method is called, the index
+     * will be within the appropriate bounds. ie all error handling has been handled outside this method)
+     */
     public String findStop(int index)
     {
-        return stops.get(index).getStopID();
+        if (index < stops.size() && index >= 0) {
+            return stops.get(index).getStopID();
+        }
+
+        return "n/a";
     }
 }
