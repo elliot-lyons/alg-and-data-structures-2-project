@@ -9,12 +9,13 @@ public class RoutePlan
     private String input, source, dest;
     private Scanner s;
     private ArrayList<Stop> stops;
-    private DijkstraAllPairsSP dijk;
+    private EdgeWeightedDigraph weightedDigraph;
+    private DijkstraSP dijk;
 
-    RoutePlan(Scanner s, DijkstraAllPairsSP dijk, ArrayList<Stop> stops)
+    RoutePlan(Scanner s, EdgeWeightedDigraph weightedDigraph, ArrayList<Stop> stops)
     {
         this.s = s;
-        this.dijk = dijk;
+        this.weightedDigraph = weightedDigraph;
         this.stops = stops;
     }
 
@@ -101,45 +102,44 @@ public class RoutePlan
         } while (!back);
     }
 
-    public void tripInstructions()
-    {
+    public void tripInstructions() {
         String res = "";
 
-        if (!dijk.hasPath(findIndex(source), findIndex(dest)))
-        {
-            route = false;
-            return;
-        }
+        dijk = new DijkstraSP(weightedDigraph, findIndex(source));
 
-        String x = dijk.path(findIndex(source), findIndex(dest)).toString();
-        String stopsArray[] = x.split("->", -1);
-        ArrayList<Integer> theStops = new ArrayList<Integer>();
+        if (dijk.hasPathTo(findIndex(dest))) {
+            String x = dijk.pathTo(findIndex(dest)).toString();
+            String stopsArray[] = x.split("->", -1);
+            ArrayList<Integer> theStops = new ArrayList<Integer>();
 
-        for (int i = 0; i < stopsArray.length; i++)
-        {
-            if (i != 0) {
-                String[] y = stopsArray[i].split(" ", -1);
-                theStops.add(Integer.parseInt(y[0]));
+            for (int i = 0; i < stopsArray.length; i++) {
+                if (i != 0) {
+                    String[] y = stopsArray[i].split(" ", -1);
+                    theStops.add(Integer.parseInt(y[0]));
+                }
             }
+
+            ArrayList<String> s = new ArrayList<String>();
+
+            s.add(source);
+
+            for (int i = theStops.size() - 1; i >= 0; i--) {
+                s.add(findStop(theStops.get(i)));
+            }
+
+            for (int i = 0; i < s.size(); i++) {
+                res += s.get(i) + "\n";
+            }
+
+            System.out.println("Stops passed:");
+            System.out.println(res);
+            System.out.println("Cost: " + dijk.distTo(findIndex(dest)));
         }
 
-        ArrayList<String> s = new ArrayList<String>();
-
-        s.add(source);
-
-        for (int i = theStops.size() - 1; i >= 0; i--)
+        else
         {
-            s.add(findStop(theStops.get(i)));
+            System.out.print("No trip between these two stops. ");
         }
-
-        for (int i = 0; i < s.size(); i++)
-        {
-            res += s.get(i) + "\n";
-        }
-
-        System.out.println("Stops passed:");
-        System.out.println(res);
-        System.out.println("Cost: " + dijk.dist(findIndex(source), findIndex(dest)));
     }
 
     public int findIndex(String stopID) {

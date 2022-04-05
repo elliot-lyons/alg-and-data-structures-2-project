@@ -56,7 +56,7 @@ public class MainMenu {
         int count = 0;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stops.txt"));
             String current = br.readLine();
 
             while ((current = br.readLine()) != null) {
@@ -116,7 +116,7 @@ public class MainMenu {
     public void createDigraph()
     {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stop_times.txt"));
             String current = br.readLine();
             String[] line = current.split(",", -1);
             String previous = line[0];
@@ -210,7 +210,7 @@ public class MainMenu {
 
         // getting shortest costs from transfers.txt, same approach as above for stop_times.txt
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//transfers.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_transfers.txt"));
             String current = br.readLine();
 
             while ((current = br.readLine()) != null) {
@@ -312,7 +312,7 @@ public class MainMenu {
                         if (firstRoute) {
                             System.out.println("This will tell you the quickest path from one stop to another!");
                             firstRoute = false;
-                            routePlan = new RoutePlan(s, dijk, stops);
+                            routePlan = new RoutePlan(s, ewd, stops);
                         }
 
                         routePlan.display();
