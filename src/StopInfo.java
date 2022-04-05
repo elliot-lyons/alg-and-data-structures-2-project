@@ -84,7 +84,7 @@ public class StopInfo
                         if (count > 0)
                         {
                             System.out.println("There " + (count > 1 ? "are " + count + " stops " :
-                            "is 1 stop ") + "containing the current query. These include:" );
+                            "is 1 stop ") + "containing the current query." + (count > 1 ? " These include:" : "") );
                         }
 
                         if (out.equals(""))
