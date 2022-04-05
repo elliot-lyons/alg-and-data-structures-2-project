@@ -12,20 +12,20 @@ public class TransitLink
 {
     public static final Scanner s = new Scanner(System.in);
 
-
     public static void main(String[] args)
     {
         Welcome welcome = new Welcome(s);
         MainMenu mainMenu = new MainMenu(s);
 
-        while (!welcome.isNext())
+        while (!welcome.isNext() && !welcome.isQuit())
         {
             welcome.display();
         }
 
-        while (!mainMenu.isQuit())
-        {
-            mainMenu.display();
+        if (!welcome.isQuit()) {
+            while (!mainMenu.isQuit()) {
+                mainMenu.display();
+            }
         }
 
         System.out.println("Thank you for using the TransLink bus planner!");
