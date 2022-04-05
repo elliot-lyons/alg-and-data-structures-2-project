@@ -28,7 +28,7 @@ public class StopInfo
             }
 
             System.out.println("Please enter a stop name, or the start of a stop name," +
-                    " you wish to find or 'back' to return:");
+                    " you wish to find or 'back' to return to main menu:");
             String input = s.nextLine();
 
             if (input.equals(null))
@@ -50,6 +50,7 @@ public class StopInfo
                         String out = "";
                         String y = x.toString();        // string with all stops beginning with input
                         String[] keys = y.split(input, -1);     // separating the stops
+                        int count = 0;
 
                         for (int i = 0; i < keys.length; i++)
                         {
@@ -63,9 +64,16 @@ public class StopInfo
 
                             keys[i] = current;
 
-                            if (tst.contains(keys[i])) {
+                            if (tst.contains(keys[i]) && !out.contains(keys[i])) {
                                 out += "Stop name: " + keys[i] + ". " + tst.get(keys[i]) + "\n";
+                                count++;
                             }
+                        }
+
+                        if (count > 0)
+                        {
+                            System.out.println("There " + (count > 1 ? "are " + count + " stops " :
+                            "is 1 stop ") + "containing the current query." );
                         }
 
                         if (out.equals(""))

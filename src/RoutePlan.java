@@ -39,7 +39,7 @@ public class RoutePlan
                     route = true;
                 }
 
-                System.out.print("Please enter a source stop ID or 'back' to return to main menu: \n");
+                System.out.println("Please enter a source stop ID or 'back' to return to main menu:");
 
                 input = s.nextLine();
 
@@ -73,7 +73,7 @@ public class RoutePlan
                         System.out.print("Invalid input. ");
                     }
 
-                    System.out.print("Please enter a destination stop ID or 'back' to return to main menu: \n");
+                    System.out.println("Please enter a destination stop ID or 'back' to return to main menu:");
 
                     input = s.nextLine();
 
@@ -110,6 +110,7 @@ public class RoutePlan
         if (dijk.hasPathTo(findIndex(dest))) {
             String x = dijk.pathTo(findIndex(dest)).toString();
             String stopsArray[] = x.split("->", -1);
+
             ArrayList<Integer> theStops = new ArrayList<Integer>();
 
             for (int i = 0; i < stopsArray.length; i++) {

@@ -10,11 +10,6 @@ public class Trip
         this.tripID = tripID;
     }
 
-//    public void addStop(Stop aStop)
-//    {
-//        stops.add(aStop);
-//    }
-
     public String getTripID()
     {
         return tripID;

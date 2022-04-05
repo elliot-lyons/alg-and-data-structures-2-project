@@ -15,7 +15,7 @@ public class MainMenu {
 
     private TST<String> tst;
     private EdgeWeightedDigraph ewd;
-    private DijkstraAllPairsSP dijk;
+
 
     private RoutePlan routePlan;
     private ArrivalTime arrivalTime;
@@ -29,12 +29,9 @@ public class MainMenu {
         tst = new TST<String>();
         stops = new ArrayList<Stop>();
         createStops();
-        System.out.println("Done stops");
         trips = new ArrayList<Trip>();
         ewd = new EdgeWeightedDigraph(stops.size());
         createDigraph();
-        System.out.println("Done graph");
-        dijk = new DijkstraAllPairsSP(ewd);
 
         firstRoute = true;
         firstStop = true;
@@ -49,14 +46,14 @@ public class MainMenu {
     /**
      *
      * @return an array list of stops. A stop object contains the id and the name of the stop. The index of these stops
-     * is important in the creation of the distances[][] and tripIDs[][] arrays, as explained below
+     * is important in the creation of the EdgeWeightedDigraph belw
      */
 
     public void createStops() {
         int count = 0;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stops.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//stops.txt"));
             String current = br.readLine();
 
             while ((current = br.readLine()) != null) {
@@ -116,7 +113,7 @@ public class MainMenu {
     public void createDigraph()
     {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_stop_times.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//stop_times.txt"));
             String current = br.readLine();
             String[] line = current.split(",", -1);
             String previous = line[0];
@@ -210,7 +207,7 @@ public class MainMenu {
 
         // getting shortest costs from transfers.txt, same approach as above for stop_times.txt
         try {
-            BufferedReader br = new BufferedReader(new FileReader("transit_files//smaller_transfers.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("transit_files//transfers.txt"));
             String current = br.readLine();
 
             while ((current = br.readLine()) != null) {

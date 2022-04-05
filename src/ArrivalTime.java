@@ -31,7 +31,7 @@ public class ArrivalTime
             }
 
             System.out.println("Please input a certain time (in the format HH:MM:SS (please include colons))" +
-                    " or 'back' to return home:");
+                    " or 'back' to return to main menu.:");
             String input = s.nextLine();
 
             if (input.equals(null))
